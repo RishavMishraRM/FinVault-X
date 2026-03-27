@@ -8,15 +8,13 @@
 
 ## ✨ UI Showcase: The Premium Experience
 
-````carousel
-![Landing Page](assets/landing_page.png)
-<!-- slide -->
-![Retrieval Pipeline](assets/retrieval_visual.png)
-<!-- slide -->
-![Adaptive Flowchart](assets/flowchart_detail.png)
-<!-- slide -->
-![Document Ingestion](assets/ingestion_process.png)
-````
+| **Landing Page** | **Retrieval Pipeline** |
+| :---: | :---: |
+| ![Landing Page](assets/landing_page.png) | ![Retrieval Pipeline](assets/retrieval_visual.png) |
+
+| **Adaptive Flowchart** | **Document Ingestion** |
+| :---: | :---: |
+| ![Adaptive Flowchart](assets/flowchart_detail.png) | ![Document Ingestion](assets/ingestion_process.png) |
 
 ---
 
