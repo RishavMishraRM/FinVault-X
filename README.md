@@ -9,13 +9,13 @@
 ## ✨ UI Showcase: The Premium Experience
 
 ````carousel
-![Landing Page](file:///C:/Users/Rishav/.gemini/antigravity/brain/c881b25f-069e-46a1-b2c4-bfcc961f1f5e/landing_page_1774646858739.png)
+![Landing Page](assets/landing_page.png)
 <!-- slide -->
-![Retrieval Pipeline](file:///C:/Users/Rishav/.gemini/antigravity/brain/c881b25f-069e-46a1-b2c4-bfcc961f1f5e/retrieval_visual_1774647261894.png)
+![Retrieval Pipeline](assets/retrieval_visual.png)
 <!-- slide -->
-![Adaptive Flowchart](file:///C:/Users/Rishav/.gemini/antigravity/brain/c881b25f-069e-46a1-b2c4-bfcc961f1f5e/flowchart_detail_1774647287161.png)
+![Adaptive Flowchart](assets/flowchart_detail.png)
 <!-- slide -->
-![Document Ingestion](file:///C:/Users/Rishav/.gemini/antigravity/brain/c881b25f-069e-46a1-b2c4-bfcc961f1f5e/ingestion_process_1774647022473.png)
+![Document Ingestion](assets/ingestion_process.png)
 ````
 
 ---
