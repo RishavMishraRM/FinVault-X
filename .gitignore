@@ -1,0 +1,11 @@
+venv/
+__pycache__/
+*.pyc
+
+.env
+.agent/
+.gemini/
+.vscode/
+temp/
+test_*.py
+test_env.py

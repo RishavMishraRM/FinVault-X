@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinVault-X Prototype</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0b0f19;
+            --surface: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.1);
+            --primary: #3b82f6;
+            --success: #10b981;
+            --error: #ef4444;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --glass: blur(16px);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: #010409;
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 40px 20px;
+            background-image:
+                radial-gradient(circle at 10% 40%, rgba(37, 99, 235, 0.2), transparent 40%),
+                radial-gradient(circle at 85% 20%, rgba(139, 92, 246, 0.15), transparent 40%),
+                radial-gradient(circle at 50% 80%, rgba(5, 150, 105, 0.1), transparent 40%);
+            background-attachment: fixed;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: 
+                radial-gradient(1px 1px at 20px 30px, #fff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 40px 70px, #fff, rgba(0,0,0,0)),
+                radial-gradient(1.5px 1.5px at 50px 160px, #fff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 80px 40px, #fff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 130px 80px, #fff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 160px 120px, #fff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 100px 10px, #fff, rgba(0,0,0,0));
+            background-repeat: repeat;
+            background-size: 200px 200px;
+            opacity: 0.25;
+            z-index: -1;
+            pointer-events: none;
+            animation: twinkle 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes twinkle {
+            from { opacity: 0.15; }
+            to { opacity: 0.35; }
+        }
+
+        .container {
+            max-width: 96%;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: fadeIn 1s ease-out;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        @media (max-width: 1100px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--surface);
+            backdrop-filter: var(--glass);
+            -webkit-backdrop-filter: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn:disabled {
+            background: var(--border);
+            color: var(--text-muted);
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        .btn-success {
+            background: var(--success);
+        }
+
+        .btn-success:hover {
+            background: #059669;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .file-upload {
+            border: 2px dashed var(--border);
+            padding: 40px 20px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .file-upload:hover {
+            border-color: var(--primary);
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            padding: 16px;
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+
+        .status-box {
+            margin-top: 20px;
+            padding: 16px;
+            border-radius: 8px;
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+
+        .status-success {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid var(--success);
+            color: var(--success);
+        }
+
+        .status-error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--error);
+            color: var(--error);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        /* Chat Styles */
+        .chat-container {
+            height: 500px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding: 10px;
+            margin-bottom: 20px;
+            scrollbar-width: thin;
+        }
+
+        .chat-container::-webkit-scrollbar { width: 5px; }
+        .chat-container::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+
+        .message {
+            max-width: 85%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        .message.user {
+            align-self: flex-end;
+            background: #1e293b;
+            color: #fff;
+            border-bottom-right-radius: 2px;
+            border-color: rgba(255,255,255,0.05);
+        }
+
+        .message.ai {
+            align-self: flex-start;
+            background: rgba(59, 130, 246, 0.1);
+            color: #f8fafc;
+            border-bottom-left-radius: 2px;
+            border-color: rgba(59, 130, 246, 0.2);
+        }
+
+        .message:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--primary);
+        }
+        
+        .message.selected {
+            border-color: var(--primary);
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .message-role {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+            opacity: 0.6;
+            font-weight: 700;
+        }
+
+        .chat-input-area {
+            display: flex;
+            gap: 10px;
+            background: rgba(0,0,0,0.2);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        /* Ultra Premium Flowchart */
+        .flow-node {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 16px 24px;
+            border-radius: 12px;
+            width: 280px;
+            position: relative;
+            z-index: 2;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .flow-node:hover { transform: translateY(-3px) scale(1.02); }
+
+        .flow-node-icon {
+            font-size: 1.5rem;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+        }
+
+        .flow-node-content { flex: 1; text-align: left; }
+
+        .flow-node-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #fff;
+            margin: 0;
+        }
+
+        .flow-node-badge {
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            margin-bottom: 2px;
+        }
+
+        .flow-node-status {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .connector-dot {
+            width: 2px;
+            height: 20px;
+            background: repeating-linear-gradient(to bottom, var(--primary) 0, var(--primary) 4px, transparent 4px, transparent 8px);
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .routing-decision {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid var(--border);
+            padding: 8px 24px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin: 10px 0;
+            z-index: 2;
+            width: fit-content;
+        }
+
+        .flowchart {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .branch-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            width: 100%;
+            margin: 0;
+        }
+
+        /* Neon Glows */
+        .glow-blue { 
+            border-color: rgba(59, 130, 246, 0.5); 
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.3), inset 0 0 10px rgba(59, 130, 246, 0.1); 
+        }
+        .glow-green { 
+            border-color: rgba(16, 185, 129, 0.5); 
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.3), inset 0 0 10px rgba(16, 185, 129, 0.1); 
+        }
+        .glow-purple { 
+            border-color: rgba(168, 85, 247, 0.5); 
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.3), inset 0 0 10px rgba(168, 85, 247, 0.1); 
+        }
+        
+        .node-disabled { opacity: 0.3; filter: grayscale(0.8); }
+
+        .branch-svg-container {
+            width: 100%;
+            height: 50px;
+            margin: -5px 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .context-box {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            padding: 20px;
+            border-radius: 8px;
+            height: 250px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+
+        .loader {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        /* Suggestions Engine */
+        .suggestions-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .suggestions-title {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--primary);
+            margin-bottom: 5px;
+            font-weight: 700;
+            opacity: 0.8;
+        }
+
+        .suggestion-chip {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: left;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .suggestion-chip::before {
+            content: '→';
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .suggestion-chip:hover {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: var(--primary);
+            color: #fff;
+            transform: translateX(5px);
+            box-shadow: -4px 0 12px rgba(59, 130, 246, 0.1);
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .floating-ingestion {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 320px;
+            max-height: 85vh;
+            overflow-y: auto;
+            border: 1px solid var(--primary);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #111827;
+            z-index: 1000;
+        }
+
+        .floating-ingestion.minimized {
+            width: 260px;
+            height: 50px;
+            overflow: hidden;
+            padding: 12px 20px;
+        }
+
+        .floating-ingestion.minimized .ingestion-content {
+            display: none;
+        }
+
+        .toggle-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1.2rem;
+            line-height: 1;
+            z-index: 1001;
+        }
+        .toggle-btn:hover { color: #fff; }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🏦 FinVault-X Prototype</h1>
+            <p class="subtitle">Adaptive Hybrid CAG–RAG Architecture with Graph-Based Semantic Indexing</p>
+        </header>
+
+        <div class="grid">
+            <!-- Left Card: Chat Interface -->
+            <div class="card" style="display: flex; flex-direction: column;">
+                <h2>Knowledge Retrieval</h2>
+                <div id="chatContainer" class="chat-container">
+                    <div class="message ai" style="cursor: default;">
+                        <div class="message-role">System</div>
+                        Welcome! Upload your financial documents and ask me anything. Click any AI response to see its unique RAG pipeline route.
+                    </div>
+                </div>
+                <div id="queryError" class="status-box status-error"></div>
+                <div class="chat-input-area">
+                    <input type="text" id="queryInput" placeholder="Type your banking query..." onkeypress="handleKey(event)">
+                    <button class="btn" id="queryBtn" onclick="processQuery()" style="width: auto;">
+                        <span id="querySpinner" class="loader" style="width:16px; height:16px; display: none;"></span> 
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="sendIcon">
+                            <line x1="22" y1="2" x2="11" y2="13"></line>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="suggestions-container">
+                    <div class="suggestion-chip" onclick="applySuggestion('Summarize the top financial risks found.')">📑 Summarize Risks</div>
+                    <div class="suggestion-chip" onclick="applySuggestion('Compare recent quarterly earnings.')">📈 Compare Earnings</div>
+                    <div class="suggestion-chip" onclick="applySuggestion('What compliance warnings are in the data?')">⚖️ Compliance Audit</div>
+                    <div class="suggestion-chip" onclick="applySuggestion('Give me a brief overview of revenue.')">💰 Revenue Overview</div>
+                </div>
+            </div>
+
+            <!-- Right Card: Route & Context -->
+            <div class="card" id="statusCard" style="display: none; min-height: 500px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                    <h3 style="font-size: 1.2rem; font-weight: 600; color: #fff; display: flex; align-items: center; gap: 10px; margin: 0;">
+                        🛣️ Pipeline Route Status
+                    </h3>
+                    <div id="interactionMeta" style="text-align: right;">
+                        <span class="badge" id="routeBadge">ROUTE: -</span>
+                        <div id="latencyLabel" style="color: var(--text-muted); font-size: 0.8rem; margin-top: 4px;">⏱ 0.000s</div>
+                    </div>
+                </div>
+                
+                <div class="flowchart" id="flowchart"></div>
+
+                <h3 style="font-size: 1.2rem; font-weight: 600; margin: 40px 0 15px 0; color: #fff; display: flex; align-items: center; gap: 10px;">
+                    📄 Extracted Context Data
+                </h3>
+                <div class="context-box" id="contextOut">Select a message on the left to inspect its source context.</div>
+            </div>
+        </div>
+
+        <div class="card floating-ingestion" id="ingestionBox">
+            <button class="toggle-btn" onclick="toggleIngestion()" id="toggleBtn">−</button>
+            <h2 style="margin-bottom: 5px; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; cursor: pointer;" onclick="toggleIngestion()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                </svg>
+                Document Ingestion
+            </h2>
+            
+            <div class="ingestion-content">
+                <p style="color: var(--text-muted); margin-bottom: 15px; font-size: 0.8rem;">Upload PDF/TXT then Ingest.</p>
+                <div class="input-group">
+                    <label class="file-upload" for="fileInput" id="dropZone">
+                        <span id="fileLabel" style="color: var(--text-muted);">Drop Files or Browse</span>
+                        <input type="file" id="fileInput" multiple accept=".pdf,.txt">
+                    </label>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn" id="uploadBtn" onclick="uploadFiles()" style="flex:1;">Upload</button>
+                    <button class="btn btn-success" id="ingestBtn" onclick="processIngest()" style="flex:1.2;">Ingest</button>
+                </div>
+                <div id="ingestStatus" class="status-box"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = "http://localhost:8000";
+        let chatHistory = [];
+        let selectedInteractionIndex = -1;
+
+        const fileInput = document.getElementById('fileInput');
+        const fileLabel = document.getElementById('fileLabel');
+        let selectedFiles = [];
+
+        function toggleIngestion() {
+            const box = document.getElementById('ingestionBox');
+            const btn = document.getElementById('toggleBtn');
+            box.classList.toggle('minimized');
+            btn.textContent = box.classList.contains('minimized') ? '+' : '−';
+        }
+
+        fileInput.addEventListener('change', (e) => {
+            selectedFiles = e.target.files;
+            fileLabel.textContent = `${selectedFiles.length} files selected`;
+        });
+
+        async function uploadFiles() {
+            if (selectedFiles.length === 0) return alert('Select files first');
+            const formData = new FormData();
+            for (let f of selectedFiles) formData.append("files", f);
+            try {
+                const res = await fetch(`${API_BASE}/upload`, { method: "POST", body: formData });
+                alert("✅ Files uploaded!");
+            } catch (e) { alert("❌ Upload failed"); }
+        }
+
+        async function processIngest() {
+            const el = document.getElementById('ingestStatus');
+            el.style.display = 'block';
+            el.innerHTML = "Indexing documents...";
+            try {
+                const res = await fetch(`${API_BASE}/ingest`, { method: "POST" });
+                el.innerHTML = "✅ Indexing Complete!";
+            } catch (e) { el.innerHTML = "❌ Indexing Failed"; }
+        }
+
+        function handleKey(e) { if (e.key === 'Enter') processQuery(); }
+
+        function applySuggestion(text) {
+            document.getElementById('queryInput').value = text;
+            processQuery();
+        }
+
+        function appendMessage(role, text, metadata = null) {
+            const container = document.getElementById('chatContainer');
+            const index = chatHistory.length;
+            chatHistory.push(metadata || { isUser: true, text });
+
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `message ${role}`;
+            msgDiv.innerHTML = `<div class="message-role">${role === 'user' ? 'You' : 'AI'}</div><div>${text.replace(/\n/g, '<br>')}</div>`;
+            msgDiv.onclick = () => selectMessage(index);
+            container.appendChild(msgDiv);
+            container.scrollTop = container.scrollHeight;
+            return index;
+        }
+
+        function selectMessage(index) {
+            const data = chatHistory[index];
+            if (!data || data.isUser) return;
+            const messages = document.querySelectorAll('.message');
+            messages.forEach((m, i) => i === index ? m.classList.add('selected') : m.classList.remove('selected'));
+            
+            document.getElementById('statusCard').style.display = 'block';
+            document.getElementById('routeBadge').textContent = `ROUTE: ${data.route_used.toUpperCase()}`;
+            document.getElementById('latencyLabel').textContent = `⏱ ${data.latency_sec.toFixed(3)}s`;
+            document.getElementById('contextOut').textContent = data.context || "No context found.";
+            renderFlowchart(data.execution_steps);
+
+            // Update Dynamic Suggestions
+            const suggContainer = document.querySelector('.suggestions-container');
+            if (data.suggestions && data.suggestions.length > 0) {
+                let html = '<div class="suggestions-title">Recommended Follow-ups</div>';
+                html += data.suggestions.map(s => `
+                    <div class="suggestion-chip" onclick="applySuggestion('${s.replace(/'/g, "\\'")}')">${s}</div>
+                `).join('');
+                suggContainer.innerHTML = html;
+                suggContainer.style.display = 'flex';
+            } else {
+                suggContainer.style.display = 'none';
+            }
+        }
+
+        async function processQuery() {
+            const input = document.getElementById('queryInput');
+            const query = input.value.trim();
+            if (!query) return;
+
+            const btn = document.getElementById('queryBtn');
+            const spinner = document.getElementById('querySpinner');
+            const sendIcon = document.getElementById('sendIcon');
+            
+            appendMessage('user', query);
+            input.value = '';
+            
+            // Clear current suggestions
+            document.querySelector('.suggestions-container').innerHTML = '';
+            
+            btn.disabled = true; spinner.style.display = 'inline-block'; sendIcon.style.display = 'none';
+
+            try {
+                const res = await fetch(`${API_BASE}/query`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ query })
+                });
+                const data = await res.json();
+                const aiIdx = appendMessage('ai', data.response, data);
+                selectMessage(aiIdx);
+            } catch (e) { alert("Error: " + e.message); }
+            finally { btn.disabled = false; spinner.style.display = 'none'; sendIcon.style.display = 'inline-block'; }
+        }
+
+        function renderFlowchart(steps) {
+            let s = { "Cache": "Not reached", "RAG": "Not reached", "Vector DB": "Not reached", "Local LLM": "Not reached" };
+            steps.forEach(step => {
+                let parts = step.split(" - ");
+                if (parts.length == 2) s[parts[0]] = parts[1];
+            });
+
+            const getStatusClass = (status, baseColor) => {
+                if (status.includes("Not reached")) return "node-disabled";
+                return `glow-${baseColor}`;
+            };
+
+            const flowchart = document.getElementById('flowchart');
+            flowchart.innerHTML = `
+                <!-- Step 1 -->
+                <div class="flow-node glow-blue">
+                    <div class="flow-node-icon">🔍</div>
+                    <div class="flow-node-content">
+                        <div class="flow-node-badge">Step 1</div>
+                        <div class="flow-node-title">Query Router</div>
+                        <div class="flow-node-status">Analyzes Intent</div>
+                    </div>
+                </div>
+
+                <div class="connector-dot" style="--primary: #3b82f6;"></div>
+
+                <!-- Step 2 -->
+                <div class="flow-node ${getStatusClass(s['Cache'], 'green')}">
+                    <div class="flow-node-icon">🗄️</div>
+                    <div class="flow-node-content">
+                        <div class="flow-node-badge">Step 2</div>
+                        <div class="flow-node-title">Cache Layer</div>
+                        <div class="flow-node-status">${s['Cache']}</div>
+                    </div>
+                </div>
+
+                <div class="connector-dot" style="--primary: #10b981;"></div>
+
+                <div class="routing-decision">Routing Decision</div>
+
+                <svg class="branch-svg-container" viewBox="0 0 400 60" style="height: 60px;">
+                    <path d="M200 0 L200 15 Q200 30 100 30 L100 60" stroke="rgba(168, 85, 247, 0.4)" stroke-width="2" fill="none"></path>
+                    <path d="M200 0 L200 15 Q200 30 300 30 L300 60" stroke="rgba(59, 130, 246, 0.4)" stroke-width="2" fill="none"></path>
+                </svg>
+
+                <div class="branch-container">
+                    <!-- Branch A -->
+                    <div class="flow-node ${getStatusClass(s['RAG'], 'purple')}" style="width: 190px; padding: 10px 15px; font-size: 0.8rem;">
+                        <div class="flow-node-icon" style="font-size: 1.1rem; width: 30px; height: 30px;">🕸️</div>
+                        <div class="flow-node-content">
+                            <div class="flow-node-title" style="font-size: 0.8rem;">Knowledge Graph</div>
+                            <div class="flow-node-status" style="font-size: 0.65rem;">${s['RAG']}</div>
+                        </div>
+                    </div>
+
+                    <!-- Branch B -->
+                    <div class="flow-node ${getStatusClass(s['Vector DB'], 'blue')}" style="width: 190px; padding: 10px 15px; font-size: 0.8rem;">
+                        <div class="flow-node-icon" style="font-size: 1.1rem; width: 30px; height: 30px;">🛢️</div>
+                        <div class="flow-node-content">
+                            <div class="flow-node-title" style="font-size: 0.8rem;">Vector DB</div>
+                            <div class="flow-node-status" style="font-size: 0.65rem;">${s['Vector DB']}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <svg class="branch-svg-container" viewBox="0 0 400 60" style="height: 60px;">
+                    <path d="M100 0 L100 30 Q100 45 200 45 L200 60" stroke="rgba(168, 85, 247, 0.3)" stroke-width="2" fill="none"></path>
+                    <path d="M300 0 L300 30 Q300 45 200 45 L200 60" stroke="rgba(59, 130, 246, 0.3)" stroke-width="2" fill="none"></path>
+                </svg>
+
+                <div class="connector-dot" style="--primary: #94a3b8; height: 10px;"></div>
+
+                <!-- Final Step -->
+                <div class="flow-node ${getStatusClass(s['Local LLM'], 'blue')}" style="width: 260px;">
+                    <div class="flow-node-icon">🧠</div>
+                    <div class="flow-node-content">
+                        <div class="flow-node-badge">Final Step</div>
+                        <div class="flow-node-title">Local LLM</div>
+                        <div class="flow-node-status">${s['Local LLM']}</div>
+                    </div>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>

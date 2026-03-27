@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+streamlit
+sentence-transformers
+faiss-cpu
+networkx
+pypdf
+langchain
+langchain-community
+requests
+numpy
+spacy
+scikit-learn
