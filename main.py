@@ -190,8 +190,8 @@ async def process_query(req: QueryRequest):
     system_prompt = (
         "You are an AI Banking Assistant for FinVault-X. "
         "Use the provided context to answer the query accurately. "
-        "Your response must be concise and around 100 words in length. "
-        "At the very end of your response, strictly include 3 relevant follow-up questions formatted exactly as: "
+        "Your response must be around 100 words in length. "
+        "At the very end, strictly include 3 follow-up questions formatted as: "
         "Suggestions: [Question 1] | [Question 2] | [Question 3]"
     )
     
@@ -201,14 +201,19 @@ async def process_query(req: QueryRequest):
     cleaned_response = full_response
     suggestions = ["Summarize this answer.", "Give more details.", "What are the risks?"] # Fallback
     
-    if "Suggestions:" in full_response:
-        parts = re.split(r"Suggestions:", full_response, flags=re.IGNORECASE)
-        cleaned_response = parts[0].strip()
-        if len(parts) > 1:
-            raw_sugg = parts[1].strip()
-            # Split by pipes, or by common list formats like [1], 1., etc.
-            raw_list = re.split(r"\||\[?\d+[\]\)\.]", raw_sugg)
-            suggestions = [s.strip().strip("[]? ") for s in raw_list if len(s.strip()) > 5]
+    if "suggestions:" in full_response.lower():
+        # Split at several possible sentinel points
+        sentinel_split = re.split(r"suggestions:", full_response, flags=re.IGNORECASE)
+        cleaned_response = sentinel_split[0].strip()
+        if len(sentinel_split) > 1:
+            raw_sugg = sentinel_split[1].strip()
+            # Split by: Pipes (|), Newlines with bullets, OR question marks followed by space
+            # This is the most robust way to capture Q1? Q2? Q3? format too.
+            raw_list = re.split(r"\||\r?\n\s*[-*•\d\.\]\)\[]*\s*|\?\s+(?=[A-Z])", raw_sugg)
+            # Filter and clean up (trimming special chars)
+            suggestions = [s.strip(" []?|.*•-") for s in raw_list if len(s.strip()) > 3]
+            # Add back the question mark manually if it was stripped at the end
+            suggestions = [s + "?" if not s.endswith("?") else s for s in suggestions]
 
     latency = eval_metrics.end_timer()
     return QueryResponse(

@@ -8,7 +8,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #0b0f19;
+            /* Dark Theme (Default) */
+            --bg: #0b111b;
             --surface: rgba(255, 255, 255, 0.03);
             --border: rgba(255, 255, 255, 0.1);
             --primary: #3b82f6;
@@ -17,6 +18,30 @@
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --glass: blur(16px);
+            --body-bg: #010409;
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --header-gradient: linear-gradient(135deg, #fff, #94a3b8);
+            --input-bg: rgba(255, 255, 255, 0.05);
+            --star-opacity: 0.25;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body.light-mode {
+            /* Light Theme */
+            --bg: #f8fafc;
+            --surface: rgba(255, 255, 255, 0.7);
+            --border: rgba(0, 0, 0, 0.08);
+            --primary: #2563eb;
+            --success: #059669;
+            --error: #dc2626;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --glass: blur(20px);
+            --body-bg: #f1f5f9;
+            --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --header-gradient: linear-gradient(135deg, #0f172a, #334155);
+            --input-bg: rgba(255, 255, 255, 0.9);
+            --star-opacity: 0;
         }
 
         * {
@@ -27,16 +52,17 @@
         }
 
         body {
-            background-color: #010409;
+            background-color: var(--body-bg);
             color: var(--text-main);
             min-height: 100vh;
             padding: 40px 20px;
             background-image:
-                radial-gradient(circle at 10% 40%, rgba(37, 99, 235, 0.2), transparent 40%),
-                radial-gradient(circle at 85% 20%, rgba(139, 92, 246, 0.15), transparent 40%),
-                radial-gradient(circle at 50% 80%, rgba(5, 150, 105, 0.1), transparent 40%);
+                radial-gradient(circle at 10% 40%, rgba(37, 99, 235, 0.1), transparent 40%),
+                radial-gradient(circle at 85% 20%, rgba(139, 92, 246, 0.1), transparent 40%),
+                radial-gradient(circle at 50% 80%, rgba(5, 150, 105, 0.05), transparent 40%);
             background-attachment: fixed;
             position: relative;
+            transition: background-color 0.5s ease;
         }
 
         body::before {
@@ -53,10 +79,22 @@
                 radial-gradient(1px 1px at 100px 10px, #fff, rgba(0,0,0,0));
             background-repeat: repeat;
             background-size: 200px 200px;
-            opacity: 0.25;
+            opacity: var(--star-opacity);
             z-index: -1;
             pointer-events: none;
             animation: twinkle 4s ease-in-out infinite alternate;
+            transition: opacity 0.5s ease;
+        }
+
+        body.light-mode::after {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: radial-gradient(#cbd5e1 0.5px, transparent 0.5px);
+            background-size: 24px 24px;
+            opacity: 0.3;
+            z-index: -1;
+            pointer-events: none;
         }
 
         @keyframes twinkle {
@@ -79,10 +117,11 @@
             font-size: 2.5rem;
             font-weight: 700;
             margin-bottom: 10px;
-            background: linear-gradient(135deg, #fff, #94a3b8);
+            background: var(--header-gradient);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
+            transition: var(--transition);
         }
 
         .subtitle {
@@ -110,14 +149,16 @@
             border: 1px solid var(--border);
             border-radius: 16px;
             padding: 30px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
         }
 
-        h2 {
+        h2, h3 {
             font-size: 1.5rem;
             font-weight: 600;
             margin-bottom: 20px;
-            color: #fff;
+            color: var(--text-main);
+            transition: var(--transition);
         }
 
         .btn {
@@ -183,11 +224,11 @@
 
         input[type="text"] {
             width: 100%;
-            background: rgba(255, 255, 255, 0.05);
+            background: var(--input-bg);
             border: 1px solid var(--border);
             padding: 16px;
             border-radius: 8px;
-            color: white;
+            color: var(--text-main);
             font-size: 1rem;
             transition: all 0.3s;
         }
@@ -258,18 +299,18 @@
 
         .message.user {
             align-self: flex-end;
-            background: #1e293b;
+            background: var(--primary);
             color: #fff;
             border-bottom-right-radius: 2px;
-            border-color: rgba(255,255,255,0.05);
+            border-color: rgba(255,255,255,0.1);
         }
 
         .message.ai {
             align-self: flex-start;
-            background: rgba(59, 130, 246, 0.1);
-            color: #f8fafc;
+            background: var(--surface);
+            color: var(--text-main);
             border-bottom-left-radius: 2px;
-            border-color: rgba(59, 130, 246, 0.2);
+            border-color: var(--border);
         }
 
         .message:hover {
@@ -277,10 +318,16 @@
             border-color: var(--primary);
         }
         
-        .message.selected {
+        .message.ai.selected {
             border-color: var(--primary);
             box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
-            background: rgba(59, 130, 246, 0.05);
+            background: rgba(59, 130, 246, 0.1);
+        }
+        
+        .message.user.selected {
+            border-color: #fff;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+            transform: scale(1.01);
         }
 
         .message-role {
@@ -295,7 +342,7 @@
         .chat-input-area {
             display: flex;
             gap: 10px;
-            background: rgba(0,0,0,0.2);
+            background: var(--surface);
             padding: 15px;
             border-radius: 12px;
             border: 1px solid var(--border);
@@ -303,9 +350,9 @@
 
         /* Ultra Premium Flowchart */
         .flow-node {
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: var(--surface);
+            backdrop-filter: var(--glass);
+            border: 1px solid var(--border);
             padding: 16px 24px;
             border-radius: 12px;
             width: 280px;
@@ -326,8 +373,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
+            background: var(--input-bg);
+            border: 1px solid var(--border);
         }
 
         .flow-node-content { flex: 1; text-align: left; }
@@ -335,7 +382,7 @@
         .flow-node-title {
             font-size: 0.95rem;
             font-weight: 700;
-            color: #fff;
+            color: var(--text-main);
             margin: 0;
         }
 
@@ -362,7 +409,8 @@
         }
 
         .routing-decision {
-            background: rgba(30, 41, 59, 0.8);
+            background: var(--surface);
+            backdrop-filter: var(--glass);
             border: 1px solid var(--border);
             padding: 8px 24px;
             border-radius: 6px;
@@ -391,16 +439,16 @@
 
         /* Neon Glows */
         .glow-blue { 
-            border-color: rgba(59, 130, 246, 0.5); 
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.3), inset 0 0 10px rgba(59, 130, 246, 0.1); 
+            border-color: var(--primary); 
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.2), inset 0 0 10px rgba(59, 130, 246, 0.05); 
         }
         .glow-green { 
-            border-color: rgba(16, 185, 129, 0.5); 
-            box-shadow: 0 0 20px rgba(16, 185, 129, 0.3), inset 0 0 10px rgba(16, 185, 129, 0.1); 
+            border-color: var(--success); 
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.2), inset 0 0 10px rgba(16, 185, 129, 0.05); 
         }
         .glow-purple { 
-            border-color: rgba(168, 85, 247, 0.5); 
-            box-shadow: 0 0 20px rgba(168, 85, 247, 0.3), inset 0 0 10px rgba(168, 85, 247, 0.1); 
+            border-color: #a855f7; 
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.2), inset 0 0 10px rgba(168, 85, 247, 0.05); 
         }
         
         .node-disabled { opacity: 0.3; filter: grayscale(0.8); }
@@ -414,7 +462,7 @@
         }
 
         .context-box {
-            background: rgba(0, 0, 0, 0.3);
+            background: var(--input-bg);
             border: 1px solid var(--border);
             padding: 20px;
             border-radius: 8px;
@@ -453,7 +501,33 @@
             color: var(--primary);
             margin-bottom: 5px;
             font-weight: 700;
-            opacity: 0.8;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            z-index: 1000;
+        }
+
+        .theme-btn {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            backdrop-filter: var(--glass);
+            transition: var(--transition);
+        }
+
+        .theme-btn:hover {
+            border-color: var(--primary);
+            transform: scale(1.1) rotate(15deg);
         }
 
         .suggestion-chip {
@@ -498,9 +572,9 @@
             max-height: 85vh;
             overflow-y: auto;
             border: 1px solid var(--primary);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+            box-shadow: var(--card-shadow);
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            background: #111827;
+            background: var(--bg);
             z-index: 1000;
         }
 
@@ -534,6 +608,13 @@
 <body>
     <div class="container">
         <header>
+            <div class="theme-toggle">
+                <button class="theme-btn" onclick="toggleTheme()" title="Toggle Theme">
+                    <svg id="themeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                </button>
+            </div>
             <h1>🏦 FinVault-X Prototype</h1>
             <p class="subtitle">Adaptive Hybrid CAG–RAG Architecture with Graph-Based Semantic Indexing</p>
         </header>
@@ -620,6 +701,29 @@
         const API_BASE = "http://localhost:8000";
         let chatHistory = [];
         let selectedInteractionIndex = -1;
+
+        // Theme Management
+        function toggleTheme() {
+            const body = document.body;
+            const isLight = body.classList.toggle('light-mode');
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+            updateThemeIcon(isLight);
+        }
+
+        function updateThemeIcon(isLight) {
+            const icon = document.getElementById('themeIcon');
+            if (isLight) {
+                icon.innerHTML = '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>';
+            } else {
+                icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
+            }
+        }
+
+        // Initialize Theme
+        if (localStorage.getItem('theme') === 'light' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+            document.body.classList.add('light-mode');
+            updateThemeIcon(true);
+        }
 
         const fileInput = document.getElementById('fileInput');
         const fileLabel = document.getElementById('fileLabel');

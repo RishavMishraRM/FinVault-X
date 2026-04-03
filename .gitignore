@@ -9,3 +9,5 @@ __pycache__/
 temp/
 test_*.py
 test_env.py
+data/
+*.index
